@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cost of Living Projection - Financial Planner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+    <nav>
+        <a href="{{ url_for('home') }}">Home</a> |
+        <a href="{{ url_for('housing_calculator') }}">Housing Loan Calculator</a> |
+        <a href="{{ url_for('education_calculator') }}">Education Cost Calculator</a> |
+        <a href="{{ url_for('income_projection_calculator') }}">Income Projection</a> |
+        <a href="{{ url_for('col_projection_calculator') }}">Cost of Living Projection</a> |
+        <a href="{{ url_for('financial_summary_calculator') }}">Full Financial Summary</a>
+        <!-- Other nav links -->
+    </nav>
+    <hr>
+    <main>
+        <h1>Cost of Living Projection</h1>
+        <form action="/col_projection" method="post">
+            <h3>Basic Costs & Inflation:</h3>
+            <p>
+                <label for="current_annual_col">Current Total Annual Cost of Living (JPY, excluding specific mortgage & targeted education savings):</label><br>
+                <input type="number" id="current_annual_col" name="current_annual_col" step="any" required value="3000000">
+            </p>
+            <p>
+                <label for="annual_col_inflation_rate">General Annual CoL Inflation Rate (e.g., 0.02 for 2%):</label><br>
+                <input type="number" id="annual_col_inflation_rate" name="annual_col_inflation_rate" step="0.001" required value="0.02">
+            </p>
+
+            <h3>Child-Related Expenses (if applicable):</h3>
+            <p>
+                <label for="child_related_annual_expense_increase_per_child">Additional Annual Expense Per Child (JPY, in today's money, during specified ages):</label><br>
+                <input type="number" id="child_related_annual_expense_increase_per_child" name="child_related_annual_expense_increase_per_child" step="any" required value="200000">
+            </p>
+            <p>
+                <label for="num_children">Number of Children (for whom these expenses apply):</label><br>
+                <input type="number" id="num_children" name="num_children" required value="2" min="0">
+            </p>
+            <div id="children_ages_div">
+                <!-- JS will populate this based on num_children, or do it server-side on next load -->
+                <p><em>Enter ages for each child below. If you change the number of children, you may need to resubmit to update age fields if this were a dynamic form, or ensure the backend handles variable numbers of age inputs. For now, we expect 'ages_of_children_0', 'ages_of_children_1', etc. to be submitted if num_children > 0. This part will be simplified for the first version; the backend will expect 'ages_of_children' as a comma-separated string perhaps, or we define a max and hide unused.
+                <br>For simplicity now: provide ages as a comma-separated list.</em></p>
+            </div>
+             <p>
+                <label for="ages_of_children">Current Ages of Children (comma-separated, e.g., 2,5):</label><br>
+                <input type="text" id="ages_of_children" name="ages_of_children" value="2,0">
+                <small>Leave blank if Number of Children is 0.</small>
+            </p>
+            <p>
+                <label for="child_expense_start_age">Child Expense Start Age (inclusive):</label><br>
+                <input type="number" id="child_expense_start_age" name="child_expense_start_age" required value="5">
+            </p>
+            <p>
+                <label for="child_expense_end_age">Child Expense End Age (exclusive, expense stops at this age):</label><br>
+                <input type="number" id="child_expense_end_age" name="child_expense_end_age" required value="18">
+            </p>
+
+            <h3>Projection Period:</h3>
+            <p>
+                <label for="projection_years">Number of Years to Project CoL:</label><br>
+                <input type="number" id="projection_years" name="projection_years" required value="10">
+            </p>
+            <p>
+                <button type="submit">Project Cost of Living</button>
+            </p>
+        </form>
+
+        {% if result %}
+        <hr>
+        <div class="result-section">
+            <h2>Projection Result:</h2>
+            <table border="1">
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Base Cost of Living (JPY)</th>
+                    <th>Additional Child Expenses (JPY)</th>
+                    <th>Total Cost of Living (JPY)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for projection_year in result %}
+                <tr>
+                    <td>{{ projection_year.year }}</td>
+                    <td>{{ "{:,.0f}".format(projection_year.base_cost_of_living) }}</td>
+                    <td>{{ "{:,.0f}".format(projection_year.additional_child_expenses) }}</td>
+                    <td>{{ "{:,.0f}".format(projection_year.total_cost_of_living) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <hr>
+        <div class="error-message">
+            <h2>Error:</h2>
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
+    </main>
+    <footer>
+        <hr>
+        <p>&copy; 2023 Financial Planning App</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Financial Summary - Financial Planner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('home') }}">Home</a> |
+        <a href="{{ url_for('housing_calculator') }}">Housing Loan Calculator</a> |
+        <a href="{{ url_for('education_calculator') }}">Education Cost Calculator</a> |
+        <a href="{{ url_for('income_projection_calculator') }}">Income Projection</a> |
+        <a href="{{ url_for('col_projection_calculator') }}">Cost of Living Projection</a> |
+        <a href="{{ url_for('financial_summary_calculator') }}">Full Financial Summary</a>
+        <!-- Other nav links -->
+    </nav>
+    <hr>
+    <main>
+        <h1>Full Financial Summary</h1>
+        <p>This tool combines projections for income, cost of living, education savings, and housing payments.</p>
+        
+        <form action="/summary" method="post">
+            <h3>Income Details (User 1):</h3>
+            <p>
+                <label for="current_annual_income_user1">Current Annual Income (User 1, JPY):</label><br>
+                <input type="number" id="current_annual_income_user1" name="current_annual_income_user1" step="any" required value="5000000">
+            </p>
+            <p>
+                <label for="annual_growth_rate_user1">Expected Annual Growth Rate (User 1, e.g., 0.02 for 2%):</label><br>
+                <input type="number" id="annual_growth_rate_user1" name="annual_growth_rate_user1" step="0.001" required value="0.02">
+            </p>
+
+            <h3>Income Details (User 2 - Optional):</h3>
+            <p>
+                <label for="current_annual_income_user2">Current Annual Income (User 2, JPY):</label><br>
+                <input type="number" id="current_annual_income_user2" name="current_annual_income_user2" step="any" required value="3000000">
+            </p>
+            <p>
+                <label for="annual_growth_rate_user2">Expected Annual Growth Rate (User 2, e.g., 0.01 for 1%):</label><br>
+                <input type="number" id="annual_growth_rate_user2" name="annual_growth_rate_user2" step="0.001" required value="0.01">
+            </p>
+
+            <h3>Cost of Living Details:</h3>
+            <p>
+                <label for="current_annual_col">Current Total Annual Cost of Living (JPY, excluding specific mortgage & targeted education savings):</label><br>
+                <input type="number" id="current_annual_col" name="current_annual_col" step="any" required value="3000000">
+            </p>
+            <p>
+                <label for="annual_col_inflation_rate">General Annual CoL Inflation Rate (e.g., 0.02 for 2%):</label><br>
+                <input type="number" id="annual_col_inflation_rate" name="annual_col_inflation_rate" step="0.001" required value="0.02">
+            </p>
+            <p>
+                <label for="child_related_annual_expense_increase_per_child">Additional Annual Expense Per Child (JPY, in today's money, during specified ages):</label><br>
+                <input type="number" id="child_related_annual_expense_increase_per_child" name="child_related_annual_expense_increase_per_child" step="any" required value="200000">
+            </p>
+             <p>
+                <label for="ages_of_children">Current Ages of Children (comma-separated, e.g., 2,5):</label><br>
+                <input type="text" id="ages_of_children" name="ages_of_children" value="2,0">
+            </p>
+            <p>
+                <label for="child_expense_start_age">Child Expense Start Age (inclusive):</label><br>
+                <input type="number" id="child_expense_start_age" name="child_expense_start_age" required value="5">
+            </p>
+            <p>
+                <label for="child_expense_end_age">Child Expense End Age (exclusive):</label><br>
+                <input type="number" id="child_expense_end_age" name="child_expense_end_age" required value="18">
+            </p>
+
+            <h3>Fixed Annual Expenses:</h3>
+            <p>
+                <label for="annual_education_savings_needed">Planned Annual Education Savings (JPY):</label><br>
+                <input type="number" id="annual_education_savings_needed" name="annual_education_savings_needed" step="any" required value="600000">
+                <small>Obtain this from the Education Cost Calculator or your own plan.</small>
+            </p>
+            <p>
+                <label for="annual_mortgage_payment">Planned Annual Mortgage Payment (PITI, JPY):</label><br>
+                <input type="number" id="annual_mortgage_payment" name="annual_mortgage_payment" step="any" required value="1200000">
+                <small>This is your total annual principal, interest, taxes, and insurance.</small>
+            </p>
+
+            <h3>Projection Period:</h3>
+            <p>
+                <label for="projection_years">Number of Years to Project Summary:</label><br>
+                <input type="number" id="projection_years" name="projection_years" required value="10">
+            </p>
+            <p>
+                <button type="submit">Generate Financial Summary</button>
+            </p>
+        </form>
+
+        {% if result %}
+        <hr>
+        <div class="result-section">
+            <h2>Financial Summary Result:</h2>
+            <table border="1">
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Projected Income (JPY)</th>
+                    <th>Projected CoL (JPY)</th>
+                    <th>Education Savings (JPY)</th>
+                    <th>Housing Payment (JPY)</th>
+                    <th>Total Expenses (JPY)</th>
+                    <th>Net Savings (JPY)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for summary_year in result %}
+                <tr>
+                    <td>{{ summary_year.year }}</td>
+                    <td>{{ "{:,.0f}".format(summary_year.projected_combined_income) }}</td>
+                    <td>{{ "{:,.0f}".format(summary_year.projected_cost_of_living) }}</td>
+                    <td>{{ "{:,.0f}".format(summary_year.projected_education_savings) }}</td>
+                    <td>{{ "{:,.0f}".format(summary_year.projected_housing_payment) }}</td>
+                    <td>{{ "{:,.0f}".format(summary_year.projected_total_expenses) }}</td>
+                    <td>{{ "{:,.0f}".format(summary_year.projected_net_savings) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <hr>
+        <div class="error-message">
+            <h2>Error:</h2>
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
+    </main>
+    <footer>
+        <hr>
+        <p>&copy; 2023 Financial Planning App</p>
+    </footer>
+</body>
+</html>

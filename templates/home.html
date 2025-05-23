@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Financial Planner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+    <nav>
+    <nav>
+    <nav>
+        <a href="{{ url_for('home') }}">Home</a> |
+        <a href="{{ url_for('housing_calculator') }}">Housing Loan Calculator</a> |
+        <a href="{{ url_for('education_calculator') }}">Education Cost Calculator</a> |
+        <a href="{{ url_for('income_projection_calculator') }}">Income Projection</a> |
+        <a href="{{ url_for('col_projection_calculator') }}">Cost of Living Projection</a> |
+        <a href="{{ url_for('financial_summary_calculator') }}">Full Financial Summary</a>
+        <!-- Other links will be added here -->
+    </nav>
+    <hr>
+    <main>
+        <h1>Welcome to the Financial Planning Web App!</h1>
+        <p>Select a tool from the navigation to get started.</p>
+        <!-- Content for specific pages will be injected here -->
+    </main>
+    <footer>
+        <hr>
+        <p>&copy; 2023 Financial Planning App</p>
+    </footer>
+</body>
+</html>

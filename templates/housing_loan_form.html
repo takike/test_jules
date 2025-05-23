@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Housing Loan Calculator - Financial Planner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+    <nav>
+    <nav>
+    <nav>
+        <a href="{{ url_for('home') }}">Home</a> |
+        <a href="{{ url_for('housing_calculator') }}">Housing Loan Calculator</a> |
+        <a href="{{ url_for('education_calculator') }}">Education Cost Calculator</a> |
+        <a href="{{ url_for('income_projection_calculator') }}">Income Projection</a> |
+        <a href="{{ url_for('col_projection_calculator') }}">Cost of Living Projection</a> |
+        <a href="{{ url_for('financial_summary_calculator') }}">Full Financial Summary</a>
+        <!-- Other nav links will be added later -->
+    </nav>
+    <hr>
+    <main>
+        <h1>Housing Loan Calculator</h1>
+        <form action="/housing" method="post">
+            <p>
+                <label for="annual_income">Annual Income (JPY):</label><br>
+                <input type="number" id="annual_income" name="annual_income" step="any" required value="6000000">
+            </p>
+            <p>
+                <label for="annual_other_debt_payments">Annual Other Debt Payments (e.g., car loans, credit cards) (JPY):</label><br>
+                <input type="number" id="annual_other_debt_payments" name="annual_other_debt_payments" step="any" required value="0">
+            </p>
+            <p>
+                <label for="mortgage_interest_rate_annual">Mortgage Interest Rate (Annual, e.g., 0.015 for 1.5%):</label><br>
+                <input type="number" id="mortgage_interest_rate_annual" name="mortgage_interest_rate_annual" step="0.001" required value="0.015">
+            </p>
+            <p>
+                <label for="loan_term_years">Loan Term (Years):</label><br>
+                <input type="number" id="loan_term_years" name="loan_term_years" step="1" required value="35">
+            </p>
+            <p>
+                <label for="down_payment_percentage">Down Payment Percentage (e.g., 10 for 10%):</label><br>
+                <input type="number" id="down_payment_percentage" name="down_payment_percentage" step="any" required value="10">
+            </p>
+            <p>
+                <label for="estimated_annual_property_tax_and_insurance">Estimated Annual Property Tax and Insurance (T&I) (JPY):</label><br>
+                <input type="number" id="estimated_annual_property_tax_and_insurance" name="estimated_annual_property_tax_and_insurance" step="any" required value="200000">
+            </p>
+            <p>
+                <button type="submit">Calculate Max Loan</button>
+            </p>
+        </form>
+
+        {% if result %}
+        <hr>
+        <div class="result-section">
+            <h2>Calculation Result:</h2>
+            <p>Estimated Maximum Affordable Loan Principal: JPY {{ "{:,.0f}".format(result) }}</p>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <hr>
+        <div class="error-message">
+            <h2>Error:</h2>
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
+    </main>
+    <footer>
+        <hr>
+        <p>&copy; 2023 Financial Planning App</p>
+    </footer>
+</body>
+</html>

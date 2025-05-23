@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Education Cost Calculator - Financial Planner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+    <nav>
+    <nav>
+    <nav>
+        <a href="{{ url_for('home') }}">Home</a> |
+        <a href="{{ url_for('housing_calculator') }}">Housing Loan Calculator</a> |
+        <a href="{{ url_for('education_calculator') }}">Education Cost Calculator</a> |
+        <a href="{{ url_for('income_projection_calculator') }}">Income Projection</a> |
+        <a href="{{ url_for('col_projection_calculator') }}">Cost of Living Projection</a> |
+        <a href="{{ url_for('financial_summary_calculator') }}">Full Financial Summary</a>
+        <!-- Other nav links -->
+    </nav>
+    <hr>
+    <main>
+        <h1>Education Cost Calculator</h1>
+        <form action="/education" method="post">
+            <h3>Child 1 Details:</h3>
+            <p>
+                <label for="current_age_child1">Current Age of Child 1:</label><br>
+                <input type="number" id="current_age_child1" name="current_age_child1" required value="2">
+            </p>
+            <p>
+                <label for="years_of_college_child1">Years of College for Child 1 (e.g., 4):</label><br>
+                <input type="number" id="years_of_college_child1" name="years_of_college_child1" required value="4">
+            </p>
+
+            <h3>Child 2 Details (Optional - set years of college to 0 if not applicable):</h3>
+            <p>
+                <label for="current_age_child2">Current Age of Child 2:</label><br>
+                <input type="number" id="current_age_child2" name="current_age_child2" value="0">
+            </p>
+            <p>
+                <label for="years_of_college_child2">Years of College for Child 2 (e.g., 4, or 0 if no second child):</label><br>
+                <input type="number" id="years_of_college_child2" name="years_of_college_child2" required value="0">
+            </p>
+
+            <h3>Financial Details:</h3>
+            <p>
+                <label for="current_annual_cost_per_child">Current Annual Cost of College (per child, in today's JPY):</label><br>
+                <input type="number" id="current_annual_cost_per_child" name="current_annual_cost_per_child" step="any" required value="1000000">
+            </p>
+            <p>
+                <label for="annual_inflation_rate_education">Expected Annual Inflation Rate for Education (e.g., 0.03 for 3%):</label><br>
+                <input type="number" id="annual_inflation_rate_education" name="annual_inflation_rate_education" step="0.001" required value="0.03">
+            </p>
+            <p>
+                <label for="investment_return_rate">Expected Annual Investment Return Rate (e.g., 0.05 for 5%):</label><br>
+                <input type="number" id="investment_return_rate" name="investment_return_rate" step="0.001" required value="0.05">
+            </p>
+            <p>
+                <label for="college_start_age">Typical College Start Age:</label><br>
+                <input type="number" id="college_start_age" name="college_start_age" required value="18">
+            </p>
+            <p>
+                <button type="submit">Calculate Education Costs</button>
+            </p>
+        </form>
+
+        {% if result %}
+        <hr>
+        <div class="result-section">
+            <h2>Calculation Result:</h2>
+            <p>Total Future Inflated Cost for All Children: JPY {{ "{:,.0f}".format(result.total_future_inflated_cost) }}</p>
+            <p>Lump Sum Needed Today (Present Value): JPY {{ "{:,.0f}".format(result.lump_sum_needed_today) }}</p>
+            <p>Estimated Annual Savings Needed: JPY 
+                {% if result.annual_savings_needed == float('inf') %}
+                    Infinity (check if college start is in the past or saving period is zero)
+                {% else %}
+                    {{ "{:,.0f}".format(result.annual_savings_needed) }}
+                {% endif %}
+            </p>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <hr>
+        <div class="error-message">
+            <h2>Error:</h2>
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
+    </main>
+    <footer>
+        <hr>
+        <p>&copy; 2023 Financial Planning App</p>
+    </footer>
+</body>
+</html>

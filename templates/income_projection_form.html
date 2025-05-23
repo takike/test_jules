@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Income Projection - Financial Planner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav>
+    <nav>
+    <nav>
+        <a href="{{ url_for('home') }}">Home</a> |
+        <a href="{{ url_for('housing_calculator') }}">Housing Loan Calculator</a> |
+        <a href="{{ url_for('education_calculator') }}">Education Cost Calculator</a> |
+        <a href="{{ url_for('income_projection_calculator') }}">Income Projection</a> |
+        <a href="{{ url_for('col_projection_calculator') }}">Cost of Living Projection</a> |
+        <a href="{{ url_for('financial_summary_calculator') }}">Full Financial Summary</a>
+        <!-- Other nav links -->
+    </nav>
+    <hr>
+    <main>
+        <h1>Income Projection</h1>
+        <form action="/income_projection" method="post">
+            <h3>User 1 Details:</h3>
+            <p>
+                <label for="current_annual_income_user1">Current Annual Income (User 1, JPY):</label><br>
+                <input type="number" id="current_annual_income_user1" name="current_annual_income_user1" step="any" required value="5000000">
+            </p>
+            <p>
+                <label for="annual_growth_rate_user1">Expected Annual Growth Rate (User 1, e.g., 0.02 for 2%):</label><br>
+                <input type="number" id="annual_growth_rate_user1" name="annual_growth_rate_user1" step="0.001" required value="0.02">
+            </p>
+
+            <h3>User 2 Details (Optional - set income to 0 if not applicable):</h3>
+            <p>
+                <label for="current_annual_income_user2">Current Annual Income (User 2, JPY):</label><br>
+                <input type="number" id="current_annual_income_user2" name="current_annual_income_user2" step="any" required value="3000000">
+            </p>
+            <p>
+                <label for="annual_growth_rate_user2">Expected Annual Growth Rate (User 2, e.g., 0.01 for 1%):</label><br>
+                <input type="number" id="annual_growth_rate_user2" name="annual_growth_rate_user2" step="0.001" required value="0.01">
+            </p>
+
+            <h3>Projection Period:</h3>
+            <p>
+                <label for="projection_years">Number of Years to Project Income:</label><br>
+                <input type="number" id="projection_years" name="projection_years" required value="10">
+            </p>
+            <p>
+                <button type="submit">Project Income</button>
+            </p>
+        </form>
+
+        {% if result %}
+        <hr>
+        <div class="result-section">
+            <h2>Projection Result:</h2>
+            <table border="1">
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>User 1 Income (JPY)</th>
+                    <th>User 2 Income (JPY)</th>
+                    <th>Combined Income (JPY)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for projection_year in result %}
+                <tr>
+                    <td>{{ projection_year.year }}</td>
+                    <td>{{ "{:,.0f}".format(projection_year.user1_income) }}</td>
+                    <td>{{ "{:,.0f}".format(projection_year.user2_income) }}</td>
+                    <td>{{ "{:,.0f}".format(projection_year.combined_income) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <hr>
+        <div class="error-message">
+            <h2>Error:</h2>
+            <p>{{ error }}</p>
+        </div>
+        {% endif %}
+    </main>
+    <footer>
+        <hr>
+        <p>&copy; 2023 Financial Planning App</p>
+    </footer>
+</body>
+</html>
